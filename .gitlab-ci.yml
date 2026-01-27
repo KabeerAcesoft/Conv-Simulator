@@ -1,0 +1,28 @@
+include:
+  - project: 'l1905/multi-cloud-operations-and-sre/bbf/ci-pipeline-templates' # Repository that maintains CICD pipeline templates
+    ref:  'stable'
+    file: '/pipelines/general.yml'
+
+variables:
+  ## MANDATORY ##
+  LP_APP_NAME: lp-convsim-app
+  SERVICE_NAMESPACE: ets-convsim
+  # Avaliable options: java, weblayer, python, npm, yarn_classic, yarn, or yarn_zero_install
+  SERVICE_TYPE: npm
+  DEPLOYMENT_NAME: lp-convsim-app
+  BUSINESS_SERVICE: lp-convsim-app
+
+
+  ## OPTIONAL ##
+  # All avaliable variables:
+  # https://gitlab.com/l1905/multi-cloud-operations-and-sre/bbf/ci-pipeline-templates/-/blob/stable/README.md
+  
+# LP_DOCKERFILE_PATH: ""  ## If your Dockerfile resides in a different folder please set it relatively to the root folder with a trailing for example "deployment/k8s/files/"
+# RUN_NODE_LINT_TEST: "false" # Default: "true"
+# RUN_NODE_UNIT_TEST: "false" # Default: "true"
+# RUN_NODE_INTEGRATION_TEST: "false" # Default: "true"
+  RUN_NODE_BUILD: "true"
+# RUN_NODE_PUBLISH: "false" # Default: "true"
+# RUN_DOCKER_BUILD: "false" # Default: "true"
+# LP_NODE_BUILD_IMAGE: "us-east1-docker.pkg.dev/lpgprj-gss-s-gke-gl-1/liveperson-images/node:22"
+# LP_NODE_TEST_IMAGE: "us-east1-docker.pkg.dev/lpgprj-gss-s-gke-gl-1/liveperson-images/node:22"

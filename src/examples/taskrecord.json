@@ -1,0 +1,85 @@
+{
+  "task": {
+    "id": "fa63d536-5f2d-4974-b6f1-4be8ca3aecd4",
+    "name": "AI Studio Synthetic Customer",
+    "accountId": "31487986",
+    "description": "AI Studio Synthetic Customer",
+    "type": "conversational AI testing",
+    "scenarios": [],
+    "personas": [],
+    "prompts": {
+      "syntheticCustomer": "99188c99-1f4d-4616-94fd-b598abe06e16",
+      "agentTraining": "",
+      "botTesting": "",
+      "qualityAssurance": "",
+      "changeManagement": "",
+      "conversationAssessment": "bcca5972-62ba-4976-8df7-23b669158256",
+      "agentAssessment": "90fd3317-f52d-42fd-80a1-6aca67d11b3d",
+      "simulationAssessment": "80390db3-ebd7-4086-9e9c-86435f4fb27d"
+    },
+    "useTemplate": true,
+    "maxConversations": 1,
+    "concurrentConversations": 1,
+    "useDelays": true,
+    "batchAgentMessages": true,
+    "batchAgentMessagesDelay": 3,
+    "consumerMessageDelayRange": {
+      "min": 3,
+      "max": 3
+    },
+    "useFakeNames": true,
+    "taskName": "1400597370-2025-6-26",
+    "brandName": "Westpac",
+    "brandIndustry": "",
+    "source": "AI Studio",
+    "syntheticCustomerflowId": "tUBuhWzaQNiUiye91yq5",
+    "skillId": 1718055970,
+    "flowId": "3CoO03YFNOzxsiiIgtHw",
+    "maxTurns": 20,
+    "influences": [],
+    "createdBy": 1400597370,
+    "updatedBy": 1400597370,
+    "createdAt": 1750894411005,
+    "updatedAt": 1750894419118,
+    "requestId": "31487986_task_request_26ac4b5a-c461-4f01-a955-fc45736bfd41",
+    "userId": 1400597370,
+    "status": "IN_PROGRESS",
+    "inFlightConversations": 1,
+    "llmErrorCount": 0,
+    "task": {
+      "inFlightConversations": 1
+    },
+    "inflightConversations": 1,
+    "completedConversations": 0,
+    "remainingConversations": 0
+  },
+  "conversations": [
+    {
+      "accountId": "31487986",
+      "aisConversationId": "XVW4byZcgtjKk982Jap8wr",
+      "createdBy": 1400597370,
+      "createdAt": 1750894419060,
+      "id": "560de3a0-a29c-45a5-ac22-495c764e5502",
+      "requestId": "31487986_task_request_26ac4b5a-c461-4f01-a955-fc45736bfd41",
+      "consumerName": "Samir Hooper",
+      "consumerToken": "eyJraWQiOiJhcHBqd3QtMTMtMDUtMTciLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50X2lkIjoiMzE0ODc5ODYiLCJleHRfY29uc3VtZXJfaWQiOiI4MzMyNDVkZC1jZTdiLTQxZWItYjY1Mi03MDk3NGFiZDM2YzkiLCJscF9jb25zdW1lcl9pZCI6Ijc4ODg0MWZhYjgzMjg3M2UzNjJhYWMyYzViYzMxYjI1MzdhYjBiYTkwNTBiNDg0NTcyNzk5YTMxOTcxNDRiZmYifQ.JLqmPpztwYSepXrOnjsRqGJuBzktqmfDbWTR0SoulkgHvmNLntnyXC-cFS-s4xJDkEj3C-VTFa5yfL-w_kuz75Q6OQPhdr-9msGgyII_jNbQS3kwECuhhhopyHRW_iRf2pd1_CV5-0NshPF8_ZnULXyTBVQI3gpIo1OUXvo80nz9AqBqyhvj2fdoOtBJvRSy2CmkD78n8ngKsn81JncaQ4R9ToHrO6dodqP-HnfjrU3prb7BU0q-imhoLiG4AsBYJa8H8LQkflKtw3F6l2-Ky2k39eLxixPhZlRD35wk7BVNDVyLrAVcsd8CM4bpXrHGikJuJWCqyYBAKRJOod4ulg",
+      "flowId": "3CoO03YFNOzxsiiIgtHw",
+      "syntheticCustomerflowId": "tUBuhWzaQNiUiye91yq5",
+      "promptVariables": {
+        "consumerName": "Samir Hooper",
+        "consumerToken": "eyJraWQiOiJhcHBqd3QtMTMtMDUtMTciLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50X2lkIjoiMzE0ODc5ODYiLCJleHRfY29uc3VtZXJfaWQiOiI4MzMyNDVkZC1jZTdiLTQxZWItYjY1Mi03MDk3NGFiZDM2YzkiLCJscF9jb25zdW1lcl9pZCI6Ijc4ODg0MWZhYjgzMjg3M2UzNjJhYWMyYzViYzMxYjI1MzdhYjBiYTkwNTBiNDg0NTcyNzk5YTMxOTcxNDRiZmYifQ.JLqmPpztwYSepXrOnjsRqGJuBzktqmfDbWTR0SoulkgHvmNLntnyXC-cFS-s4xJDkEj3C-VTFa5yfL-w_kuz75Q6OQPhdr-9msGgyII_jNbQS3kwECuhhhopyHRW_iRf2pd1_CV5-0NshPF8_ZnULXyTBVQI3gpIo1OUXvo80nz9AqBqyhvj2fdoOtBJvRSy2CmkD78n8ngKsn81JncaQ4R9ToHrO6dodqP-HnfjrU3prb7BU0q-imhoLiG4AsBYJa8H8LQkflKtw3F6l2-Ky2k39eLxixPhZlRD35wk7BVNDVyLrAVcsd8CM4bpXrHGikJuJWCqyYBAKRJOod4ulg",
+        "customer_name": "name: Samir Hooper"
+      },
+      "skillId": 1718055970,
+      "active": true,
+      "state": "ACTIVE",
+      "status": "OPEN",
+      "lastAgentMessageTime": 1750894419060,
+      "agentMessages": [],
+      "messages": [],
+      "agentMessagesSentCount": 0,
+      "pendingConsumer": false,
+      "queued": false
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "accountId": "31487986",
+  "aisConversationId": "XVW4byZcgtjKk982Jap8wr",
+  "createdBy": 1400597370,
+  "createdAt": 1750894419060,
+  "id": "560de3a0-a29c-45a5-ac22-495c764e5502",
+  "requestId": "31487986_task_request_26ac4b5a-c461-4f01-a955-fc45736bfd41",
+  "consumerName": "Samir Hooper",
+  "consumerToken": "eyJraWQiOiJhcHBqd3QtMTMtMDUtMTciLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50X2lkIjoiMzE0ODc5ODYiLCJleHRfY29uc3VtZXJfaWQiOiI4MzMyNDVkZC1jZTdiLTQxZWItYjY1Mi03MDk3NGFiZDM2YzkiLCJscF9jb25zdW1lcl9pZCI6Ijc4ODg0MWZhYjgzMjg3M2UzNjJhYWMyYzViYzMxYjI1MzdhYjBiYTkwNTBiNDg0NTcyNzk5YTMxOTcxNDRiZmYifQ.JLqmPpztwYSepXrOnjsRqGJuBzktqmfDbWTR0SoulkgHvmNLntnyXC-cFS-s4xJDkEj3C-VTFa5yfL-w_kuz75Q6OQPhdr-9msGgyII_jNbQS3kwECuhhhopyHRW_iRf2pd1_CV5-0NshPF8_ZnULXyTBVQI3gpIo1OUXvo80nz9AqBqyhvj2fdoOtBJvRSy2CmkD78n8ngKsn81JncaQ4R9ToHrO6dodqP-HnfjrU3prb7BU0q-imhoLiG4AsBYJa8H8LQkflKtw3F6l2-Ky2k39eLxixPhZlRD35wk7BVNDVyLrAVcsd8CM4bpXrHGikJuJWCqyYBAKRJOod4ulg",
+  "flowId": "3CoO03YFNOzxsiiIgtHw",
+  "syntheticCustomerflowId": "tUBuhWzaQNiUiye91yq5",
+  "promptVariables": {
+    "consumerName": "Samir Hooper",
+    "consumerToken": "eyJraWQiOiJhcHBqd3QtMTMtMDUtMTciLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhY2NvdW50X2lkIjoiMzE0ODc5ODYiLCJleHRfY29uc3VtZXJfaWQiOiI4MzMyNDVkZC1jZTdiLTQxZWItYjY1Mi03MDk3NGFiZDM2YzkiLCJscF9jb25zdW1lcl9pZCI6Ijc4ODg0MWZhYjgzMjg3M2UzNjJhYWMyYzViYzMxYjI1MzdhYjBiYTkwNTBiNDg0NTcyNzk5YTMxOTcxNDRiZmYifQ.JLqmPpztwYSepXrOnjsRqGJuBzktqmfDbWTR0SoulkgHvmNLntnyXC-cFS-s4xJDkEj3C-VTFa5yfL-w_kuz75Q6OQPhdr-9msGgyII_jNbQS3kwECuhhhopyHRW_iRf2pd1_CV5-0NshPF8_ZnULXyTBVQI3gpIo1OUXvo80nz9AqBqyhvj2fdoOtBJvRSy2CmkD78n8ngKsn81JncaQ4R9ToHrO6dodqP-HnfjrU3prb7BU0q-imhoLiG4AsBYJa8H8LQkflKtw3F6l2-Ky2k39eLxixPhZlRD35wk7BVNDVyLrAVcsd8CM4bpXrHGikJuJWCqyYBAKRJOod4ulg",
+    "customer_name": "name: Samir Hooper"
+  },
+  "skillId": 1718055970,
+  "active": true,
+  "state": "ACTIVE",
+  "status": "OPEN",
+  "lastAgentMessageTime": 1750894419060,
+  "agentMessages": [],
+  "messages": [],
+  "agentMessagesSentCount": 0,
+  "pendingConsumer": false,
+  "queued": false,
+  "scenarioText": "The customer recently downloaded the Westpac banking app and is trying to transfer funds to a friend but cannot figure out how to do it. They are unsure where to find the transfer option in the app and are worried they might accidentally send money to the wrong person. They want clear, step-by-step instructions on how to transfer funds securely and are also curious if there are any daily transfer limits they should be aware of.",
+  "successCriteria": "agent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transactionagent guided the customer through the steps to make a transaction",
+  "persona": "tech-savvy individual who frequently uses online banking services for personal and business needs. Values efficiency and security but can get frustrated with technical issues or delays. Prefers clear and concise communication.values efficiency and speed concerned about security and privacy asks detailed questions about processes gets frustrated with technical glitches prefers clear and concise communication frequently checks account balances and transactions uses financial jargon occasionally appreciates proactive updates expects 24/7 availability likes to confirm details for accuracyCan you confirm that for me? Is this secure? I need this done quickly. What's the status of my transaction? I noticed a charge I don't recognize. Can you walk me through the process? I prefer to handle this online. Is there a way to automate this? I need to check my balance. Thanks for the quick response."
+}

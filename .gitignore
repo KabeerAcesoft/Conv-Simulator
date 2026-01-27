@@ -1,0 +1,133 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.gemini
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+.vuepress/dist/
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+.development.env
+.*.env
+
+# Development tools
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDEs
+.idea/
+*.sln.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Serverless
+.serverless/
+.webpack/
+
+# Claude Code
+.claude/
+
+# Firebase/Google Cloud
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+
+# Keys and secrets
+keys/
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+service-account*.json
+gcp-*.json
+
+# AWS credentials
+.aws/
+credentials
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.#*
+
+# Test output
+test-results/
+junit.xml
+
+# Package files
+*.tgz
+*.tar.gz
+*.zip
+./claude/
+.claude/

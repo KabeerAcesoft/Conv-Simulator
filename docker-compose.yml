@@ -1,0 +1,11 @@
+
+services:
+
+  lp-simulation-api:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8081:8081
