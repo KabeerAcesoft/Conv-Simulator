@@ -109,7 +109,10 @@ async function bootstrap() {
   // Cookie parsing
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
-  await testFirestoreStartup();
+ testFirestoreStartup().catch((err) => {
+  logger.error('Firestore startup test failed, continuing startup', err);
+});
+
 
   // CORS configuration
   app.enableCors(environmentService.getCorsConfig());
