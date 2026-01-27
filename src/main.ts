@@ -128,7 +128,8 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
-  const port = configService.get<number>('PORT') || 3000;
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
 
   // Graceful shutdown handling
   const server = await app.listen(port);
