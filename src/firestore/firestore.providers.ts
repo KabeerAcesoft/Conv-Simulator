@@ -25,35 +25,43 @@ import {
 } from 'src/Controllers/users/users.interfaces';
 
 /**
- * 🔹 Firestore Injection Token
+ * 🔥 Firestore Injection Token
  */
 export const FirestoreDatabaseProvider = 'firestoredb';
 
 /**
- * 🔹 Firestore Provider (SAFE FOR CLOUD RUN)
- * This will NOT crash the app if credentials are missing.
+ * 🚑 CLOUD RUN SAFE FIRESTORE PROVIDER
+ *
+ * - Uses default GCP identity when running in Cloud Run
+ * - Will NOT crash app if credentials misconfigured
  */
 export const firestoreProvider = {
   provide: FirestoreDatabaseProvider,
   useFactory: async () => {
     try {
-      console.log('🔥 Initializing Firestore...');
+      console.log('🔥 Initializing Firestore connection...');
 
       const db = new Firestore({
-        projectId: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+        projectId:
+          process.env.GCLOUD_PROJECT ||
+          process.env.GOOGLE_CLOUD_PROJECT ||
+          process.env.FIREBASE_PROJECT_ID,
       });
 
-      console.log('✅ Firestore initialized');
+      console.log('✅ Firestore initialized successfully');
       return db;
     } catch (err) {
-      console.error('❌ Firestore init failed — app will still start', err);
-      return null; // 👈 prevents startup crash
+      console.error(
+        '❌ Firestore init failed — app will still start (DB features disabled)',
+        err,
+      );
+      return null; // prevents startup crash
     }
   },
 };
 
 /**
- * 🔹 Collections (used elsewhere in app)
+ * 📦 Firestore Collections Used in App
  */
 export const FirestoreCollectionProviders: string[] = [
   UsersDocument.collectionName,

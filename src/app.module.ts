@@ -20,6 +20,7 @@ import { MetricsService } from './common/services/metrics.service';
 import { RetryService } from './common/services/retry.service';
 import { ShutdownService } from './common/services/shutdown.service';
 import { EnvironmentService } from './config/environment.service';
+
 import { AccountConfigModule } from './Controllers/AccountConfig/account-config.module';
 import { AIStudioModule } from './Controllers/AIStudio/ai-studio.module';
 import { APIModule } from './Controllers/APIService/api.module';
@@ -43,7 +44,10 @@ import { AppService } from './app.service';
     NestCacheModule.register({ isGlobal: true }),
     CachingModule,
 
-    // 🔥 CLOUD RUN SAFE CONFIG
+    /**
+     * 🌍 CLOUD RUN SAFE CONFIG
+     * No hard failures if env vars missing
+     */
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
@@ -64,7 +68,11 @@ import { AppService } from './app.service';
         FIREBASE_PROJECT_ID: Joi.string().allow('').default(''),
         FIRESTORE_DATABASE_ID: Joi.string().allow('').default('(default)'),
 
-        // 🚑 KEY FIX — NOT REQUIRED AT STARTUP
+        /**
+         * 🔥 IMPORTANT:
+         * Do NOT require service account at startup
+         * Cloud Run can use default service identity
+         */
         FIREBASE_SERVICE_ACCOUNT: Joi.string().allow('').optional(),
       }),
     }),
@@ -80,7 +88,9 @@ import { AppService } from './app.service';
       },
     }),
 
-    // 🔥 SAFE FIRESTORE INIT
+    /**
+     * 🔥 FIRESTORE SAFE INIT
+     */
     FirestoreModule.forRoot({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
@@ -90,7 +100,7 @@ import { AppService } from './app.service';
         try {
           credentials = raw ? JSON.parse(raw) : undefined;
         } catch {
-          console.log('⚠️ FIREBASE_SERVICE_ACCOUNT not valid — using default creds');
+          console.log('⚠️ Invalid FIREBASE_SERVICE_ACCOUNT JSON — using default creds');
         }
 
         return {
@@ -134,15 +144,17 @@ import { AppService } from './app.service';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    // Global security
     consumer.apply(SecurityMiddleware).forRoutes('*');
 
+    // Auth middleware except public routes
     consumer
       .apply(PreAuthMiddleware)
       .exclude(
-        '/api/v1/connector-api/*path',
-        '/health/*path',
-        '/callback/*path',
-        '/logout/*path',
+        { path: '/api/v1/connector-api/(.*)', method: RequestMethod.ALL },
+        { path: '/health/(.*)', method: RequestMethod.ALL },
+        { path: '/callback/(.*)', method: RequestMethod.ALL },
+        { path: '/logout/(.*)', method: RequestMethod.ALL },
       )
       .forRoutes(SimulatorController);
   }
