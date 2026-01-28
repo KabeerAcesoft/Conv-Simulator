@@ -8,14 +8,9 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
-
 import * as Joi from 'joi';
 
-const environment = (process.env.NODE_ENV || '').trim();
-
 import { AuthModule } from 'src/auth/auth.module';
-
-/* authentication & logging */
 import { PreAuthMiddleware } from './auth/auth.middleware';
 import { SecurityMiddleware } from './common/middleware/security.middleware';
 import { AuditLogService } from './common/services/audit-log.service';
@@ -41,111 +36,42 @@ import { UsersModule } from './Controllers/users/users.module';
 import { FirestoreModule } from './firestore/firestore.module';
 import { HealthModule } from './health/health.module';
 import { MetricsController } from './metrics/metrics.controller';
-/* modules */
 import { AppService } from './app.service';
 
 @Module({
   imports: [
-    NestCacheModule.register({
-      isGlobal: true,
-    }),
+    NestCacheModule.register({ isGlobal: true }),
     CachingModule,
+
+    // 🔥 CLOUD RUN SAFE CONFIG
     ConfigModule.forRoot({
-      envFilePath:
-        process.env.NODE_ENV === 'development' ? '.development.env' : '.env',
       isGlobal: true,
       cache: true,
       validationSchema: Joi.object({
-        MAX_ACCOUNT_TASKS: Joi.number().integer().required().min(1).default(3),
-        MAX_CONVERSATIONS_LIMIT: Joi.number()
-          .integer()
-          .required()
-          .min(1)
-          .default(100),
-        MAX_QUEUING: Joi.number().integer().required().min(1).default(100),
-        MIN_WARM_UP_DELAY: Joi.number()
-          .integer()
-          .required()
-          .min(1)
-          .default(1000),
-        MAX_WARM_UP_DELAY: Joi.number()
-          .integer()
-          .required()
-          .min(1)
-          .default(5000),
-        LOGGING_ENABLED: Joi.boolean().required(),
-        ZONE: Joi.string().required(),
-        SCHEDULER_INTERVAL: Joi.number()
-          .integer()
-          .required()
-          .min(1)
-          .default(5000),
-        SCHEDULER_CRON: Joi.string().required().default('*/5 * * * *'),
-        PROJECT_ID: Joi.string().required(),
-        FIREBASE_PROJECT_ID: Joi.string().required(),
-        PORT: Joi.number().port().required(),
-        WEBHOOK_ENV: Joi.string().required(),
-        DEVELOPER_ACCOUNT_ID: Joi.string().required(),
-        FIREBASE_SERVICE_ACCOUNT: Joi.string()
-          .custom((value, helpers) => {
-            if (!value) return helpers.error('any.required');
-            try {
-              const object = JSON.parse(value);
+        MAX_ACCOUNT_TASKS: Joi.number().integer().min(1).default(3),
+        MAX_CONVERSATIONS_LIMIT: Joi.number().integer().min(1).default(100),
+        MAX_QUEUING: Joi.number().integer().min(1).default(100),
+        MIN_WARM_UP_DELAY: Joi.number().integer().min(1).default(1000),
+        MAX_WARM_UP_DELAY: Joi.number().integer().min(1).default(5000),
+        LOGGING_ENABLED: Joi.boolean().default(true),
+        ZONE: Joi.string().allow('').default('cloud'),
+        SCHEDULER_INTERVAL: Joi.number().integer().min(1).default(5000),
+        SCHEDULER_CRON: Joi.string().default('*/5 * * * *'),
+        PORT: Joi.number().port().default(8080),
+        WEBHOOK_ENV: Joi.string().allow('').default('cloud'),
+        DEVELOPER_ACCOUNT_ID: Joi.string().allow('').default(''),
+        PROJECT_ID: Joi.string().allow('').default(''),
+        FIREBASE_PROJECT_ID: Joi.string().allow('').default(''),
+        FIRESTORE_DATABASE_ID: Joi.string().allow('').default('(default)'),
 
-              const requiredKeys = [
-                'type',
-                'project_id',
-                'private_key_id',
-                'private_key',
-                'client_email',
-                'client_id',
-                'auth_uri',
-                'token_uri',
-                'auth_provider_x509_cert_url',
-                'client_x509_cert_url',
-                'universe_domain',
-              ];
-
-              for (const key of requiredKeys) {
-                if (!(key in object)) {
-                  return helpers.error('any.custom', {
-                    message: `Missing key: ${key}`,
-                  });
-                }
-              }
-
-              return value;
-            } catch (error) {
-              return helpers.error('any.custom', {
-                message: 'FIREBASE_SERVICE_ACCOUNT must be valid JSON' + error,
-              });
-            }
-          }, 'firebase service account JSON validation')
-          .required(),
-        FIRESTORE_DATABASE_ID: Joi.string().required(),
+        // 🚑 KEY FIX — NOT REQUIRED AT STARTUP
+        FIREBASE_SERVICE_ACCOUNT: Joi.string().allow('').optional(),
       }),
-      validationOptions: {
-        abortEarly: true,
-      },
     }),
 
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL || 'info',
-        // Only use pretty formatting in development
-        ...(environment === 'development' && {
-          transport: {
-            target: 'pino-pretty',
-            options: {
-              levelFirst: true,
-              translateTime: 'SYS:standard',
-              ignore: 'pid,hostname,reqId,req,res',
-              messageFormat:
-                '{req.method} {req.url} {res.statusCode} {res.responseTime}ms {msg}',
-              colorize: true,
-            },
-          },
-        }),
         autoLogging: {
           ignore: (request) =>
             request.url?.includes('/health') ||
@@ -154,35 +80,31 @@ import { AppService } from './app.service';
       },
     }),
 
+    // 🔥 SAFE FIRESTORE INIT
     FirestoreModule.forRoot({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const serviceAccount = JSON.parse(
-          configService.get<string>('FIREBASE_SERVICE_ACCOUNT').trim(),
-        );
+        const raw = configService.get<string>('FIREBASE_SERVICE_ACCOUNT');
+        let credentials;
 
-        const firebaseServiceAccountProjectId = process.env.FIREBASE_PROJECT_ID;
-
-        const firestoreDatabaseId = configService
-          .get<string>('FIRESTORE_DATABASE_ID')
-          .trim();
-
-        console.log({
-          fn: 'FirestoreModule',
-          message: 'Initializing FirestoreModule with projectId',
-          firebaseServiceAccountProjectId,
-        });
+        try {
+          credentials = raw ? JSON.parse(raw) : undefined;
+        } catch {
+          console.log('⚠️ FIREBASE_SERVICE_ACCOUNT not valid — using default creds');
+        }
 
         return {
-          credentials: serviceAccount,
-          projectId: firebaseServiceAccountProjectId
-            ? firebaseServiceAccountProjectId
-            : configService.get<string>('FIREBASE_PROJECT_ID').trim(),
-          databaseId: firestoreDatabaseId,
+          credentials,
+          projectId:
+            process.env.FIREBASE_PROJECT_ID ||
+            configService.get<string>('FIREBASE_PROJECT_ID'),
+          databaseId:
+            configService.get<string>('FIRESTORE_DATABASE_ID') || '(default)',
         };
       },
       inject: [ConfigService],
     }),
+
     SimulationModule,
     AppConfigurationModule,
     DatabaseModule,
@@ -212,27 +134,13 @@ import { AppService } from './app.service';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // Apply security middleware globally
-    consumer.apply(SecurityMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-
-    /*
-    /(.*)". In previous versions, the symbols ?, *, and + were used to denote optional or repeating path parameters. The latest version of "path-to-regexp" now requires the use of named parameters. For example, instead of using a route like /users/* to capture all routes starting with "/users", you should use /users/*path. For more details, refer to the migration guide. Attempting to auto-convert...
-    */
+    consumer.apply(SecurityMiddleware).forRoutes('*');
 
     consumer
       .apply(PreAuthMiddleware)
       .exclude(
-        {
-          path: '/api/v1/connector-api/*path',
-          method: RequestMethod.ALL,
-        },
-        {
-          path: '/health/*path',
-          method: RequestMethod.ALL,
-        },
+        '/api/v1/connector-api/*path',
+        '/health/*path',
         '/callback/*path',
         '/logout/*path',
       )

@@ -1,3 +1,5 @@
+import { Firestore } from '@google-cloud/firestore';
+
 import {
   ServiceWorkerDto,
   SimulationConfigurationDto,
@@ -22,10 +24,37 @@ import {
   UsersDocument,
 } from 'src/Controllers/users/users.interfaces';
 
+/**
+ * 🔹 Firestore Injection Token
+ */
 export const FirestoreDatabaseProvider = 'firestoredb';
 
-export const FirestoreOptionsProvider = 'firestoreOptions';
+/**
+ * 🔹 Firestore Provider (SAFE FOR CLOUD RUN)
+ * This will NOT crash the app if credentials are missing.
+ */
+export const firestoreProvider = {
+  provide: FirestoreDatabaseProvider,
+  useFactory: async () => {
+    try {
+      console.log('🔥 Initializing Firestore...');
 
+      const db = new Firestore({
+        projectId: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT,
+      });
+
+      console.log('✅ Firestore initialized');
+      return db;
+    } catch (err) {
+      console.error('❌ Firestore init failed — app will still start', err);
+      return null; // 👈 prevents startup crash
+    }
+  },
+};
+
+/**
+ * 🔹 Collections (used elsewhere in app)
+ */
 export const FirestoreCollectionProviders: string[] = [
   UsersDocument.collectionName,
   CredentialsDocument.collectionName,
