@@ -21,8 +21,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
-    snapshot: true,
-    abortOnError: false,
+    abortOnError: false, // 🔥 IMPORTANT for Cloud Run
     logger:
       process.env.NODE_ENV === 'production'
         ? ['error', 'warn', 'log']
@@ -30,8 +29,6 @@ async function bootstrap() {
   });
 
   const logger = app.get(Logger);
-  const lpLogger = app.get(LpLoggerService);
-
   app.useLogger(logger);
 
   const configService = app.get(ConfigService);
@@ -49,19 +46,16 @@ async function bootstrap() {
 
   app.use(compression());
 
-  // 🌍 Global exception filter
+  // 🌍 Global Filters & Pipes
   app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
-
-  // ✅ Validation
   app.useGlobalPipes(new CustomValidationPipe());
 
-  // 🔍 Interceptors
   app.useGlobalInterceptors(
     new TracingInterceptor(),
     new TimeoutInterceptor(new Reflector()),
   );
 
-  // 📦 Body parsing
+  // 📦 Body size limits
   const maxFileSize =
     configService.get<number>('MAX_FILE_SIZE') || 10 * 1024 * 1024;
 
@@ -74,7 +68,7 @@ async function bootstrap() {
   // 🌐 CORS
   app.enableCors(environmentService.getCorsConfig());
 
-  // 📚 Swagger (dev only)
+  // 📘 Swagger (dev only)
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('Simulation API')
@@ -87,15 +81,16 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
-  // 🔥 Cloud Run port binding
+  // 🔥 Cloud Run PORT FIX
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
+  // 🚀 START SERVER
   const server = await app.listen(port, '0.0.0.0');
 
-  console.log('✅ SERVER STARTED ON PORT:', port);
+  console.log(`✅ SERVER RUNNING ON PORT ${port}`);
   printStartUp(port);
 
-  // 🛑 Graceful shutdown
+  // 🧹 Graceful shutdown
   process.on('SIGTERM', async () => {
     logger.log('SIGTERM received, shutting down gracefully');
     await shutdownService.gracefulShutdown(server);
@@ -116,7 +111,4 @@ async function bootstrap() {
   }
 }
 
-bootstrap().catch((err) => {
-  console.error('🔥 APP CRASHED DURING STARTUP:', err);
-  process.exit(1);
-});
+bootstrap();
