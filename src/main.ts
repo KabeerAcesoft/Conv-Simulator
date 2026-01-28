@@ -41,8 +41,8 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const httpAdapterHost = app.get(HttpAdapterHost);
   const shutdownService = app.get(ShutdownService);
-  const environmentService = app.get(EnvironmentService);
-  const database = app.get<Firestore>(FirestoreDatabaseProvider as any);
+  // const environmentService = app.get(EnvironmentService);
+  // const database = app.get<Firestore>(FirestoreDatabaseProvider as any);
 
   async function testFirestoreStartup() {
     const testCollection = '_startup_tests';
@@ -135,7 +135,7 @@ async function bootstrap() {
 
 
   // Graceful shutdown handling
-  const server = await app.listen(port);
+  const server = await app.listen(port, '0.0.0.0');
 
   // Handle shutdown signals
   process.on('SIGTERM', async () => {
@@ -150,7 +150,8 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  printStartUp(port);
+console.log('✅ SERVER STARTED ON PORT:', port);
+printStartUp(port);
 
   // Log configuration summary in development
   if (!environmentService.isProduction()) {
