@@ -39,7 +39,7 @@ async function bootstrap() {
   const shutdownService = app.get(ShutdownService);
   const environmentService = app.get(EnvironmentService);
 
-  // Security middleware
+  // 🛡 Security
   app.use(
     helmet({
       contentSecurityPolicy: process.env.NODE_ENV === 'production',
@@ -49,32 +49,32 @@ async function bootstrap() {
 
   app.use(compression());
 
-  // Global exception filter
+  // 🌍 Global exception filter
   app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
 
-  // Global validation pipe
+  // ✅ Validation
   app.useGlobalPipes(new CustomValidationPipe());
 
-  // Global interceptors
+  // 🔍 Interceptors
   app.useGlobalInterceptors(
     new TracingInterceptor(),
     new TimeoutInterceptor(new Reflector()),
   );
 
-  // Body parsing with size limits
+  // 📦 Body parsing
   const maxFileSize =
     configService.get<number>('MAX_FILE_SIZE') || 10 * 1024 * 1024;
 
   app.use(bodyParser.json({ limit: maxFileSize }));
   app.use(bodyParser.urlencoded({ limit: maxFileSize, extended: true }));
 
-  // Cookie parsing
+  // 🍪 Cookies
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
-  // CORS configuration
+  // 🌐 CORS
   app.enableCors(environmentService.getCorsConfig());
 
-  // Swagger documentation (only in development)
+  // 📚 Swagger (dev only)
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('Simulation API')
@@ -87,6 +87,7 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
+  // 🔥 Cloud Run port binding
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
   const server = await app.listen(port, '0.0.0.0');
@@ -94,7 +95,7 @@ async function bootstrap() {
   console.log('✅ SERVER STARTED ON PORT:', port);
   printStartUp(port);
 
-  // Graceful shutdown handling
+  // 🛑 Graceful shutdown
   process.on('SIGTERM', async () => {
     logger.log('SIGTERM received, shutting down gracefully');
     await shutdownService.gracefulShutdown(server);
@@ -107,7 +108,6 @@ async function bootstrap() {
     process.exit(0);
   });
 
-  // Log configuration summary in development
   if (!environmentService.isProduction()) {
     logger.debug(
       'Configuration Summary:',
@@ -116,4 +116,7 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('🔥 APP CRASHED DURING STARTUP:', err);
+  process.exit(1);
+});
