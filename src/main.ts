@@ -41,41 +41,41 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const httpAdapterHost = app.get(HttpAdapterHost);
   const shutdownService = app.get(ShutdownService);
-  // const environmentService = app.get(EnvironmentService);
-  // const database = app.get<Firestore>(FirestoreDatabaseProvider as any);
+  const environmentService = app.get(EnvironmentService);
+  const database = app.get<Firestore>(FirestoreDatabaseProvider as any);
 
-  async function testFirestoreStartup() {
-    const testCollection = '_startup_tests';
-    const documentId = `startup-${Date.now()}`;
-    const payload = { docId: documentId, ts: Date.now(), status: 'ok' };
+  // async function testFirestoreStartup() {
+  //   const testCollection = '_startup_tests';
+  //   const documentId = `startup-${Date.now()}`;
+  //   const payload = { docId: documentId, ts: Date.now(), status: 'ok' };
 
-    try {
-      await database.collection(testCollection).doc(documentId).set(payload);
+  //   try {
+  //     await database.collection(testCollection).doc(documentId).set(payload);
 
-      const snap = await database
-        .collection(testCollection)
-        .doc(documentId)
-        .get();
+  //     const snap = await database
+  //       .collection(testCollection)
+  //       .doc(documentId)
+  //       .get();
 
-      lpLogger.log({
-        fn: 'testFirestoreStartup',
-        message: 'Created Document',
-        data: snap.data(),
-      });
+  //     lpLogger.log({
+  //       fn: 'testFirestoreStartup',
+  //       message: 'Created Document',
+  //       data: snap.data(),
+  //     });
 
-      //logger.log({ fn: 'testFirestoreStartup', message: 'Created document', data: snap.data() });
-      await database.collection(testCollection).doc(documentId).delete();
+  //     //logger.log({ fn: 'testFirestoreStartup', message: 'Created document', data: snap.data() });
+  //     await database.collection(testCollection).doc(documentId).delete();
 
-      lpLogger.log({
-        fn: 'testFirestoreStartup',
-        message: 'Deleted document',
-        docId: documentId,
-      });
-    } catch (error) {
-      logger.error({ fn: 'testFirestoreStartup', error });
-      throw new Error('Firestore startup self-test failed');
-    }
-  }
+  //     lpLogger.log({
+  //       fn: 'testFirestoreStartup',
+  //       message: 'Deleted document',
+  //       docId: documentId,
+  //     });
+  //   } catch (error) {
+  //     logger.error({ fn: 'testFirestoreStartup', error });
+  //     throw new Error('Firestore startup self-test failed');
+  //   }
+  // }
 
   // Security middleware
   app.use(
@@ -131,7 +131,7 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
 
   // Graceful shutdown handling
