@@ -3,7 +3,6 @@ import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
 
-import { Firestore } from '@google-cloud/firestore';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
@@ -16,11 +15,8 @@ import { ValidationPipe as CustomValidationPipe } from './common/pipes/validatio
 import { LpLoggerService } from './common/services/lp-logger.service';
 import { ShutdownService } from './common/services/shutdown.service';
 import { EnvironmentService } from './config/environment.service';
-import { FirestoreDatabaseProvider } from './firestore/firestore.providers';
 import { printStartUp } from './utils/common';
 import { AppModule } from './app.module';
-
-const environment = (process.env.NODE_ENV || '').trim();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -42,9 +38,6 @@ async function bootstrap() {
   const httpAdapterHost = app.get(HttpAdapterHost);
   const shutdownService = app.get(ShutdownService);
   const environmentService = app.get(EnvironmentService);
-  const database = app.get<Firestore>(FirestoreDatabaseProvider as any);
-
-
 
   // Security middleware
   app.use(
@@ -78,11 +71,6 @@ async function bootstrap() {
   // Cookie parsing
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
- testFirestoreStartup().catch((err) => {
-  logger.error('Firestore startup test failed, continuing startup', err);
-});
-
-
   // CORS configuration
   app.enableCors(environmentService.getCorsConfig());
 
@@ -96,17 +84,17 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document);
   }
 
   const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
-
-  // Graceful shutdown handling
   const server = await app.listen(port, '0.0.0.0');
 
-  // Handle shutdown signals
+  console.log('✅ SERVER STARTED ON PORT:', port);
+  printStartUp(port);
+
+  // Graceful shutdown handling
   process.on('SIGTERM', async () => {
     logger.log('SIGTERM received, shutting down gracefully');
     await shutdownService.gracefulShutdown(server);
@@ -118,9 +106,6 @@ async function bootstrap() {
     await shutdownService.gracefulShutdown(server);
     process.exit(0);
   });
-
-console.log('✅ SERVER STARTED ON PORT:', port);
-printStartUp(port);
 
   // Log configuration summary in development
   if (!environmentService.isProduction()) {
